@@ -496,9 +496,21 @@ button.selected {
         const response = await fetch(`/quiz2?adminUsername=${adminUsername}`);
         const questions = await response.json();
 
-        // ✅ กรองเฉพาะคำถามของ Admin คนนั้น
-        const filteredQuestions = questions.filter(q => q.adminUsername === adminUsername);
+        const selectedLevel = document.getElementById("level-filter").value;
+        const selectedType = document.getElementById("type-filter").value;
 
+        console.log("🔎 กำลังดึงคำถาม..."); 
+        console.log("เลือกเลเวล:", selectedLevel);
+        console.log("เลือกประเภท:", selectedType);
+        
+        // ✅ กรองคำถามที่ตรงกับตัวกรอง
+        const filteredQuestions = questions.filter(q => 
+            (selectedLevel === "all" || q.level.toString() === selectedLevel) &&
+            (selectedType === "all" || q.type === selectedType)
+        );
+
+        console.log("📋 คำถามที่เหลือหลังจากกรอง:", filteredQuestions.length);
+        
         const tableBody = document.querySelector("#quiz-table tbody");
         tableBody.innerHTML = '';
 
@@ -687,7 +699,7 @@ document.getElementById('save-roomcode-btn').addEventListener('click', async fun
     };
 
     try {
-        const response = await fetch('https://projectcs30-github-io.onrender.com/save-roomcode2', {
+        const response = await fetch('http://192.168.0.102:3000/save-roomcode2', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
